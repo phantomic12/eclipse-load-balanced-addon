@@ -1,0 +1,32 @@
+name: Stream Check
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: health-check-write
+  cancel-in-progress: false
+
+jobs:
+  stream-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run stream health check
+        run: python3 scripts/health_check.py --mode stream
+
+      - name: Commit healthy-backends.json if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add healthy-backends.json status-data/
+          git diff --staged --quiet || git commit -m "health: stream check update [skip ci]"
+          git push

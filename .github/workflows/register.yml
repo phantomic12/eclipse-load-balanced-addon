@@ -1,0 +1,71 @@
+name: Register Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Backend URL to register (e.g. https://backend2.workers.dev)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate and register backend
+        env:
+          BACKEND_URL: ${{ inputs.url }}
+        run: |
+          echo "Registering backend: $BACKEND_URL"
+
+          # Health-check the new backend
+          MANIFEST=$(curl -sL --max-time 10 -o /dev/null -w "%{http_code}" "$BACKEND_URL/manifest.json")
+          if [ "$MANIFEST" != "200" ]; then
+            echo "::error::Backend manifest check failed (HTTP $MANIFEST)"
+            exit 1
+          fi
+
+          # Verify it's valid JSON with an id field
+          HAS_ID=$(curl -sL --max-time 10 "$BACKEND_URL/manifest.json" | python3 -c "import sys,json; d=json.load(sys.stdin); print('yes' if 'id' in d else 'no')")
+          if [ "$HAS_ID" != "yes" ]; then
+            echo "::error::Backend manifest missing 'id' field"
+            exit 1
+          fi
+
+          echo "Backend passed manifest check. Adding to backends.json..."
+
+          # Add to backends.json
+          python3 -c "
+          import json
+          url = '$BACKEND_URL'
+          url = url.rstrip('/')
+          with open('backends.json', 'r') as f:
+              backends = json.load(f)
+          if url not in backends:
+              backends.append(url)
+          with open('backends.json', 'w') as f:
+              json.dump(backends, f, indent=2)
+              f.write('\n')
+          print(f'Added {url} to backends.json')
+          print(f'Total backends: {len(backends)}')
+          "
+
+      - name: Commit backends.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backends.json
+          git diff --staged --quiet || git commit -m "register: add ${{ inputs.url }} [skip ci]"
+          git push
+
+      - name: Trigger manifest ping to update healthy-backends.json
+        run: |
+          gh workflow run manifest-ping.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

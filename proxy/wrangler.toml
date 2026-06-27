@@ -1,0 +1,13 @@
+name = "eclipse-lb-proxy"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# GitHub raw URL for healthy-backends.json
+BACKENDS_URL = "https://raw.githubusercontent.com/phantomic12/eclipse-load-balanced-addon/main/healthy-backends.json"
+# Cache duration in seconds (60s)
+CACHE_TTL = 60
+
+[observability]
+enabled = true

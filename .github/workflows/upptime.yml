@@ -1,0 +1,52 @@
+name: Generate Status Dashboard
+
+on:
+  schedule:
+    # Every 10 minutes (after manifest ping)
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'status-data/**'
+      - 'backends.json'
+      - 'scripts/generate_status.py'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: status-page
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate status page
+        run: python3 scripts/generate_status.py
+
+      - name: Commit status page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add status-data/
+          git diff --staged --quiet || git commit -m "status: update dashboard [skip ci]"
+          git push || true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: status-data/site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
