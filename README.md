@@ -38,6 +38,7 @@ GitHub repo (single account, ~850 GHA min/month):
 
 ## Documents
 
+- [Setup Guide](docs/SETUP.md) — Deploy your first backend + register with the proxy
 - [Architecture](docs/ARCHITECTURE.md) — Full system design, data flow, component responsibilities
 - [Decisions](docs/DECISIONS.md) — Decision log from the grilling session (23 questions resolved)
 - [Roadmap](docs/ROADMAP.md) — Implementation phases

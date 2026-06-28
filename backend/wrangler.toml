@@ -1,0 +1,25 @@
+name = "eclipse-backend"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# All API keys are optional — set them via `wrangler secret put` or here.
+# Without keys, backend still works for keyless providers (SoundCloud, Internet Archive, Radio Browser).
+# HIFI_INSTANCES = "https://your-hifi-instance.com"
+# SC_CLIENT_ID = ""
+# PI_KEY = ""
+# PI_SECRET = ""
+# TADDY_KEY = ""
+# TADDY_UID = ""
+# DEEZER_ARL = ""
+# QOBUZ_USER_TOKEN = ""
+# QOBUZ_SECRET = ""
+# QOBUZ_APP_ID = ""
+
+# Upstash Redis (optional, only used for Deezer stream caching)
+# UPSTASH_REDIS_REST_URL = ""
+# UPSTASH_REDIS_REST_TOKEN = ""
+
+[observability]
+enabled = true
