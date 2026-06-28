@@ -103,6 +103,35 @@ GitHub repo (single account, ~850 GHA min/month):
   └── status dashboard → GitHub Pages
 ```
 
+## Install in Eclipse Music
+
+1. Deploy the proxy (see above)
+2. Deploy at least one backend and register it
+3. Open Eclipse Music on your iPhone/iPad
+4. Go to **Settings** → **Connections** → **Add Connection** → **Addon**
+5. Paste your proxy URL: `https://eclipse-lb-proxy.<your-subdomain>.workers.dev/manifest.json`
+6. Tap **Install**
+
+Your addon appears in the search dropdown. Eclipse routes all searches and playback through the proxy, which load-balances across your backend instances.
+
+## Custom Domain (Optional)
+
+See [Custom Domain Setup](docs/CUSTOM-DOMAIN.md) for pointing your own domain at the proxy.
+
+## Testing
+
+### Test the proxy
+```bash
+./scripts/test_proxy.sh https://your-proxy.workers.dev
+```
+Tests: proxy health, CORS headers, manifest, search, stream, 404 handling, response headers.
+
+### Test health checks
+```bash
+python3 scripts/test_health_check.py
+```
+Unit tests with mock backends — verifies manifest, search, stream checks against healthy and broken backends.
+
 ## Documents
 
 - [Setup Guide](docs/SETUP.md) — Deploy your first backend + register with the proxy
