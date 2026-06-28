@@ -1,64 +1,95 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ─── Eclipse Load-Balanced Addon — Backend Deploy Script ───────────────────────
+# ─── Eclipse Load-Balanced Addon — Multi-Platform Backend Deploy ───────────────
 # Usage:
-#   ./scripts/deploy_backend.sh
-#
-# Deploys the backend to Cloudflare Workers and registers it with the proxy.
-# API keys are set via `wrangler secret put` (interactive) or can be set
-# in backend/wrangler.toml [vars] section.
+#   ./scripts/deploy_backend.sh cf        # Cloudflare Workers
+#   ./scripts/deploy_backend.sh vercel    # Vercel
+#   ./scripts/deploy_backend.sh deno      # Deno Deploy
+#   ./scripts/deploy_backend.sh fly       # Fly.io (Docker)
+#   ./scripts/deploy_backend.sh render    # Render (Docker)
+#   ./scripts/deploy_backend.sh node     # Local Node.js
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 BACKEND_DIR="$REPO_DIR/backend"
+PLATFORM="${1:-cf}"
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "  Eclipse LB Addon — Backend Deploy"
+echo "  Eclipse LB Addon — Backend Deploy ($PLATFORM)"
 echo "═══════════════════════════════════════════════════════════════"
-
-# Check wrangler is installed
-if ! command -v npx &> /dev/null; then
-  echo "ERROR: npx not found. Install Node.js first."
-  exit 1
-fi
 
 cd "$BACKEND_DIR"
 
-echo ""
-echo "→ Installing dependencies..."
-npm install
+case "$PLATFORM" in
+  cf)
+    echo "→ Deploying to Cloudflare Workers..."
+    npm install
+    npx wrangler deploy
+    echo ""
+    echo "✓ Deployed. URL: https://eclipse-backend.<your-subdomain>.workers.dev"
+    echo "  Set keys: npx wrangler secret put HIFI_INSTANCES"
+    ;;
+
+  vercel)
+    echo "→ Deploying to Vercel..."
+    npm install
+    npx vercel --prod
+    echo ""
+    echo "✓ Deployed. Check Vercel dashboard for URL."
+    echo "  Set keys: vercel env add HIFI_INSTANCES"
+    ;;
+
+  deno)
+    echo "→ Deploying to Deno Deploy..."
+    echo "  Link repo at https://dash.deno.com — set deno.ts as entrypoint"
+    echo "  Or deploy via CLI:"
+    echo "    deno deploy --allow-net --allow-env deno.ts"
+    echo ""
+    echo "  Set keys in Deno Deploy dashboard: Project → Settings → Environment Variables"
+    ;;
+
+  fly)
+    echo "→ Deploying to Fly.io..."
+    if ! command -v flyctl &> /dev/null; then
+      echo "  Installing flyctl..."
+      curl -L https://fly.io/install.sh | sh
+      export PATH="$HOME/.fly/bin:$PATH"
+    fi
+    npm install
+    flyctl deploy
+    echo ""
+    echo "✓ Deployed. Check fly.toml for app name."
+    echo "  Set keys: flyctl secrets set HIFI_INSTANCES=..."
+    ;;
+
+  render)
+    echo "→ Deploying to Render..."
+    echo "  Option A (Blueprint): connect repo at https://dashboard.render.com"
+    echo "    → New → Blueprint → select this repo → render.yaml detected"
+    echo ""
+    echo "  Option B (Manual): create Web Service, connect repo"
+    echo "    Build: npm install"
+    echo "    Start: node node-server.js"
+    echo ""
+    echo "  Set keys in Render dashboard → Environment tab"
+    ;;
+
+  node)
+    echo "→ Starting local Node.js server..."
+    npm install
+    node node-server.js
+    ;;
+
+  *)
+    echo "Unknown platform: $PLATFORM"
+    echo "Usage: $0 {cf|vercel|deno|fly|render|node}"
+    exit 1
+    ;;
+esac
 
 echo ""
-echo "→ Deploying to Cloudflare Workers..."
-npx wrangler deploy
-
-echo ""
-echo "→ Backend deployed successfully!"
-echo ""
-
-# Get the deployed URL
-WORKER_NAME=$(grep '^name = ' wrangler.toml | head -1 | sed 's/name = "//;s/"//')
-ACCOUNT_SUBDOMAIN=""
-
-echo "Your backend is live at: https://${WORKER_NAME}.<your-subdomain>.workers.dev"
-echo "(Find the exact URL in the wrangler deploy output above)"
-echo ""
-echo "To register this backend with the proxy:"
-echo "  gh workflow run register.yml -f url=https://${WORKER_NAME}.<your-subdomain>.workers.dev"
-echo ""
-
-# Optionally set secrets
-echo "To set API keys (optional, enables additional providers):"
-echo "  npx wrangler secret put HIFI_INSTANCES"
-echo "  npx wrangler secret put SC_CLIENT_ID"
-echo "  npx wrangler secret put PI_KEY"
-echo "  npx wrangler secret put PI_SECRET"
-echo "  npx wrangler secret put TADDY_KEY"
-echo "  npx wrangler secret put TADDY_UID"
-echo "  npx wrangler secret put DEEZER_ARL"
-echo "  npx wrangler secret put QOBUZ_USER_TOKEN"
-echo "  npx wrangler secret put QOBUZ_SECRET"
-echo "  npx wrangler secret put QOBUZ_APP_ID"
-echo ""
-echo "Without keys, backend still works for SoundCloud, Internet Archive, Radio Browser."
+echo "═══════════════════════════════════════════════════════════════"
+echo "  After deploy, register your backend:"
+echo "  gh workflow run register.yml -f url=https://YOUR-BACKEND-URL"
+echo "═══════════════════════════════════════════════════════════════"

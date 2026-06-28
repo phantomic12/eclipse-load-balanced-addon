@@ -1,13 +1,19 @@
 {
-  "name": "eclipse-all-in-one",
-  "version": "1.4.0",
+  "name": "eclipse-backend",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "dev:cf": "wrangler dev",
+    "deploy:cf": "wrangler deploy",
+    "dev:node": "node node-server.js",
+    "start": "node node-server.js",
+    "deploy:vercel": "vercel --prod",
+    "deploy:deno": "deno run --allow-net --allow-env deno.ts"
   },
   "dependencies": {
-    "hono": "^4.12.25"
+    "hono": "^4.12.25",
+    "@hono/node-server": "^1.13.0"
   },
   "devDependencies": {
     "wrangler": "^4.100.0"

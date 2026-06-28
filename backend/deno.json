@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env deno.ts"
+  },
+  "imports": {
+    "hono": "npm:hono@^4.12.25"
+  }
+}

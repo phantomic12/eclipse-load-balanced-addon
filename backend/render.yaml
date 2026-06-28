@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: eclipse-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node node-server.js
+    healthCheckPath: /manifest.json
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      # Set API keys via Render dashboard or CLI:
+      # HIFI_INSTANCES, SC_CLIENT_ID, PI_KEY, PI_SECRET, etc.

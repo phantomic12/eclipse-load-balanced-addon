@@ -105,20 +105,40 @@ Check that the backend is registered and healthy:
 
 ## Adding More Backends
 
-Deploy the same `backend/` code to different platforms or different CF accounts:
+Deploy the same `backend/` code to different platforms for maximum redundancy:
 
+### Cloudflare Workers (different account for separate quota)
 ```bash
-# Deploy to a different CF account
+cd backend
 CLOUDFLARE_ACCOUNT_ID=<other-account-id> npx wrangler deploy
-
-# Or deploy to Vercel/Deno Deploy (requires adapting the export)
 ```
 
-Register each new backend:
+### Vercel
+```bash
+cd backend && npx vercel --prod
+```
 
+### Deno Deploy
+1. Fork this repo
+2. Create project at [dash.deno.com](https://dash.deno.com/new)
+3. Link your fork, set entrypoint to `backend/deno.ts`
+4. Add API keys as environment variables
+
+### Fly.io
+```bash
+cd backend && flyctl deploy
+```
+
+### Render
+1. Go to [render.com](https://dashboard.render.com) → New → Blueprint
+2. Select this repo — `backend/render.yaml` auto-detected
+
+### Register each new backend
 ```bash
 gh workflow run register.yml -f url=https://<new-backend-url>
 ```
+
+Each platform has different failure modes. Deploying across all of them maximizes uptime — if CF goes down, Vercel/Deno/Fly backends still serve traffic through the proxy.
 
 ## API Key Reference
 
