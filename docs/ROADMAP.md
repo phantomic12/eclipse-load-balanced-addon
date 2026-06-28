@@ -63,22 +63,7 @@ Make it production-ready.
 - [ ] Write user-facing README for installing the addon
 - [ ] Set up custom domain for proxy (optional, via CF DNS)
 
-## Phase 5 — Provider Expansion (v2)
-
-Add more music sources to the codebase.
-
-- [ ] Deezer (from `jacobyz211/deezer`)
-- [ ] Qobuz (from `jacobyz211/qobuz-api1`)
-- [ ] YouTube (from `jacobyz211/youtube`)
-- [ ] Spotify FLAC (from `jacobyz211/spotiflac-eclipse`)
-- [ ] Jamendo (from `jacobyz211/jamendo`)
-- [ ] AnimeThemes (from `jacobyz211/animethemes`)
-- [ ] FMA (from `jacobyz211/fma-`)
-- [ ] MusicBrainz (from `jacobyz211/musicbrainz`)
-- [ ] Test each provider's search + stream endpoints
-- [ ] Update manifest `types` and `resources` if needed
-
-## Phase 6 — Scale + Optimize (future)
+## Phase 5 — Scale + Optimize (future)
 
 - [ ] Add more platforms (Render, Netlify, Fly.io)
 - [ ] Weighted backend selection (faster backends get more traffic)
