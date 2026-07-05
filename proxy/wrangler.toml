@@ -1,7 +1,7 @@
 name = "eclipse-lb-proxy"
 main = "src/index.js"
 compatibility_date = "2025-01-01"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 [vars]
 # GitHub raw URL for healthy-backends.json

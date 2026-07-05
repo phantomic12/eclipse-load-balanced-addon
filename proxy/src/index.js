@@ -79,7 +79,16 @@ async function fetchWithTimeout(url, opts, timeoutMs) {
 
 // ─── Proxy with retries ────────────────────────────────────────────────────────
 const MAX_RETRIES = 2;
-const TIMEOUT_MS = 2000;
+const DEFAULT_TIMEOUT_MS = 3000;
+// Eclipse search can take 4-5s on a cold backend (HiFi pool ping + Deezer
+// login); 2s was too tight. Per-endpoint budget:
+//   /search    — 5000ms (Eclipse's search timeout is 5s)
+//   /stream/*  — 3000ms (Eclipse's stream timeout is 3s)
+//   everything — 3000ms
+function timeoutFor(path) {
+  if (path === '/search' || path.startsWith('/search/')) return 5000;
+  return DEFAULT_TIMEOUT_MS;
+}
 
 async function proxyRequest(request, env) {
   const startTime = Date.now();
@@ -104,6 +113,7 @@ async function proxyRequest(request, env) {
   const url = new URL(request.url);
   const path = url.pathname;
   const query = url.search;
+  const TIMEOUT_MS = timeoutFor(path);
 
   // Headers to forward (strip proxy/CDN-specific headers)
   const forwardHeaders = new Headers(request.headers);
