@@ -1,0 +1,14 @@
+{
+  "timestamp": 1783332965,
+  "mode": "stream",
+  "results": [
+    {
+      "url": "https://eclipse-backend.phantomic12.workers.dev",
+      "healthy": false,
+      "mode": "stream",
+      "message": "hardcoded: stream response missing 'url' field | search-then-stream: stream response missing 'url' field",
+      "response_time_ms": 11090,
+      "timestamp": 1783332965
+    }
+  ]
+}
