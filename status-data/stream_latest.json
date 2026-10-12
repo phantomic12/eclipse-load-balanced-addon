@@ -1,14 +1,14 @@
 {
-  "timestamp": 1791720377,
+  "timestamp": 1791815128,
   "mode": "stream",
   "results": [
     {
       "url": "https://eclipse-backend.phantomic12.workers.dev",
-      "healthy": true,
+      "healthy": false,
       "mode": "stream",
-      "message": "hardcoded: stream url present | search-then-stream: resolved stream for ia_music_FREE_background_music_dhalius",
-      "response_time_ms": 8360,
-      "timestamp": 1791720377
+      "message": "hardcoded: stream response missing 'url' field | search-then-stream: no IA tracks in search results",
+      "response_time_ms": 7600,
+      "timestamp": 1791815128
     }
   ]
 }
