@@ -1,0 +1,14 @@
+{
+  "timestamp": 1792446153,
+  "mode": "manifest",
+  "results": [
+    {
+      "url": "https://eclipse-backend.phantomic12.workers.dev",
+      "healthy": true,
+      "mode": "manifest",
+      "message": "ok",
+      "response_time_ms": 190,
+      "timestamp": 1792446153
+    }
+  ]
+}
