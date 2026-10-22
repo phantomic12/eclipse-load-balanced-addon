@@ -1,5 +1,5 @@
 {
-  "timestamp": 1792580982,
+  "timestamp": 1792667343,
   "mode": "stream",
   "results": [
     {
@@ -7,8 +7,8 @@
       "healthy": true,
       "mode": "stream",
       "message": "hardcoded: stream url present | search-then-stream: resolved stream for ia_music_FREE_background_music_dhalius",
-      "response_time_ms": 8410,
-      "timestamp": 1792580982
+      "response_time_ms": 3350,
+      "timestamp": 1792667343
     }
   ]
 }
