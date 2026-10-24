@@ -1,5 +1,5 @@
 {
-  "timestamp": 1792825896,
+  "timestamp": 1792843504,
   "mode": "manifest",
   "results": [
     {
@@ -7,8 +7,8 @@
       "healthy": true,
       "mode": "manifest",
       "message": "ok",
-      "response_time_ms": 120,
-      "timestamp": 1792825896
+      "response_time_ms": 170,
+      "timestamp": 1792843504
     }
   ]
 }
