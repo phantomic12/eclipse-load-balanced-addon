@@ -1,5 +1,5 @@
 {
-  "timestamp": 1793346571,
+  "timestamp": 1793371121,
   "mode": "search",
   "results": [
     {
@@ -7,8 +7,8 @@
       "healthy": true,
       "mode": "search",
       "message": "60 tracks",
-      "response_time_ms": 2260,
-      "timestamp": 1793346571
+      "response_time_ms": 2940,
+      "timestamp": 1793371121
     }
   ]
 }
